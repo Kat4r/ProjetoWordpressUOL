@@ -21,8 +21,7 @@
 
 ## Descrição
 
-Este projeto implementa uma aplicação WordPress utilizando contêineres Docker na AWS. Utiliza o Amazon EFS para armazenamento persistente dos arquivos estáticos, o Amazon RDS para o banco de dados MySQL e o Elastic Load Balancer para gerenciar o tráfego de entrada.
-
+Este projeto implementa uma aplicação WordPress utilizando contêineres Docker na AWS. Utiliza o Amazon EFS para armazenamento persistente dos arquivos estáticos e Amazon RDS para o banco de dados MySQL.
 
 ## Ferramentas
   - Git
