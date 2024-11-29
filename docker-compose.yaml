@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8081:80"
+    environment:
+      WORDPRESS_DB_HOST: <host-database>
+      WORDPRESS_DB_USER: <user-configurado-no-rds>
+      WORDPRESS_DB_PASSWORD: <senha-configurada-no-rds>
+      WORDPRESS_DB_NAME: <nome-db-configurada-no-rds>
+    volumes:
+      - /efs/wp-content:/var/www/html
