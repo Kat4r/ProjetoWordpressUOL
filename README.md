@@ -128,7 +128,7 @@ services:
 ```
 
 2. Arquivo `user_data.sh`
- - Por ser um arquivo longo, vou apenas deixar a menção ao mesmo no repositório [AQUI]()
+ - Por ser um arquivo longo, vou apenas deixar a menção ao mesmo no repositório [AQUI](https://github.com/Kat4r/ProjetoWordpressUOL/blob/main/user_data.sh)
 
 
 ## Verificar logs
