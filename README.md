@@ -168,17 +168,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - **Database Name:** `NOME DO BANCO DE DADOS`
 
-3. **Conceder Acesso ao Usuário:**
-
-   - Usando o cliente MySQL, crie o banco de dados e conceda privilégios.
-
-   ```sql
-   CREATE DATABASE wordpressdb DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-   CREATE USER 'vini'@'%' IDENTIFIED BY 'sua_senha_segura';
-   GRANT ALL PRIVILEGES ON wordpressdb.* TO 'vini'@'%';
-   FLUSH PRIVILEGES;
-   ```
-
 ## 9. Configuração do Load Balancer Clássico
 
 1. **Criar o Classic Load Balancer**:
