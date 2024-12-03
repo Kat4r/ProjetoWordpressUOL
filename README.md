@@ -80,7 +80,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Nome:** `MeuIGW`
    - **Associar à VPC:** `MinhaVPC`
 
-2. **Passos:**
+2. **Associar IGW ao VPC:**
 
    - Acesse **Internet Gateways** no serviço VPC.
    - Crie o IGW e associe-o à VPC.
