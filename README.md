@@ -26,7 +26,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ## **Arquitetura do Projeto**
 
-![Arquitetura do Projeto](https://drive.google.com/file/d/117ltQzDs4j78o7_TgwsZxHq_613w6ECZ/view?usp=drive_link)
+![Arquitetura do Projeto](imagens/image.png)
 
 *Nota: Inclua um diagrama representando a arquitetura, mostrando a VPC, subnets, instância EC2, RDS, NAT Gateway e Load Balancer.*
 
