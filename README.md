@@ -39,7 +39,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ---
 
-## **Passo a Passo**
+## **Passo-a-Passo para a configuração**
 
 ### **1. Configuração da VPC**
 
@@ -207,18 +207,18 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: wordpressdb.c3u8iiyg6cb.us-east-1.rds.amazonaws.com
-      WORDPRESS_DB_USER: vini
-      WORDPRESS_DB_PASSWORD: sua_senha_segura
-      WORDPRESS_DB_NAME: wordpressdb
+      WORDPRESS_DB_HOST: <seu endpoint rds>
+      WORDPRESS_DB_USER: <seu usuário>
+      WORDPRESS_DB_PASSWORD: <sua senha>
+      WORDPRESS_DB_NAME: <nome da database>
     volumes:
       - ./wp-content:/var/www/html
 ```
 
 ### 3. Implementar Wordpress
 ```
-mkdir ~/wordpress && cd ~/wordpress
-nano docker-compose.yml  # Cole o conteúdo acima
+mkdir ~/wp && cd ~/wp
+sudo vim docker-compose.yml  # Cole o conteúdo acima
 docker-compose up -d
 ```
 
@@ -251,8 +251,8 @@ docker logs <id-do-conteiner>
 ## Considerações de Segurança
 
 - **Proteção de Credenciais**:
-  - Evite expor senhas em arquivos públicos.
-  - Considere o uso de variáveis de ambiente seguras ou AWS Secrets Manager.
+  - Evite expor suas senhas e credenciais em arquivos públicos.
+  - Considere o uso de variáveis de ambiente seguras.
 
 - **Security Groups Restritivos**:
   - Mantenha as regras dos Security Groups tão restritivas quanto possível.
@@ -265,19 +265,6 @@ docker logs <id-do-conteiner>
 
 ---
 
-## Próximos Passos
-
-- **Implementar HTTPS**:
-  - Configure certificados SSL para o Load Balancer usando o AWS Certificate Manager.
-
-- **Escalabilidade**:
-  - Considere adicionar Auto Scaling Groups para a instância EC2.
-
-- **Monitoramento**:
-  - Configure logs e métricas usando o AWS CloudWatch.
-
-- **Automatização**:
-  - Use ferramentas como AWS CloudFormation ou Terraform para automatizar a infraestrutura.
 
 ## Referências
 
