@@ -28,8 +28,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ![Arquitetura do Projeto](imagens/image.png)
 
-*Nota: Inclua um diagrama representando a arquitetura, mostrando a VPC, subnets, instância EC2, RDS, NAT Gateway e Load Balancer.*
-
 ---
 
 ## **Pré-requisitos**
@@ -144,8 +142,8 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 1. **Configurações da Instância:**
 
-   - **AMI:** Amazon Linux 2
-   - **Tipo de Instância:** t2.micro
+   - **AMI:** Sistema linux de sua preferência
+   - **Tipo de Instância:** t2.micro (ou conforme a necessidade)
    - **Subnet:** `Subnet-Privada`
    - **Auto-assign Public IP:** Desabilitado
    - **Security Group:** `SG-Privado`
@@ -163,8 +161,8 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Versão:** Compatível com o WordPress
    - **Instância:** db.t2.micro
    - **Credenciais:**
-     - **Username:** `vini`
-     - **Password:** `sua_senha_segura`
+     - **Username:** `Seu usuário`
+     - **Password:** `Sua senha segura`
    - **VPC:** `MinhaVPC`
    - **Subnet Group:** Subnets privadas
    - **Public Accessibility:** No
@@ -172,7 +170,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 2. **Configurar o Banco de Dados:**
 
-   - **Database Name:** `wordpressdb`
+   - **Database Name:** `NOME DO BANCO DE DADOS`
 
 3. **Conceder Acesso ao Usuário:**
 
@@ -183,3 +181,136 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    CREATE USER 'vini'@'%' IDENTIFIED BY 'sua_senha_segura';
    GRANT ALL PRIVILEGES ON wordpressdb.* TO 'vini'@'%';
    FLUSH PRIVILEGES;
+   ```
+
+## 9. Configuração do Load Balancer Clássico
+
+1. **Criar o Classic Load Balancer**:
+   - Nome: `MeuCLB`
+   - VPC: `MinhaVPC`
+   - **Listeners**:
+     - Load Balancer Protocol: HTTP, Port 80
+     - Instance Protocol: HTTP, Port 80
+   - **Subnets**: `Subnet-Publica`
+   - **Security Group**: `SG-LoadBalancer`
+
+2. **Configurar o Health Check**:
+   - Ping Protocol: HTTP
+   - Ping Port: 80
+   - Ping Path: `/healthcheck.html`
+
+3. **Registrar Instâncias**:
+   - Adicione a instância EC2 privada.
+     
+## 10. Implantação do WordPress com Docker
+
+### 1. Instalar Docker e Docker Compose na Instância EC2:
+
+```bash
+sudo amazon-linux-extras install docker -y
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+### 2. Criar o arquivo ```docker-compose.yaml```
+```version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: wordpressdb.c3u8iiyg6cb.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_USER: vini
+      WORDPRESS_DB_PASSWORD: sua_senha_segura
+      WORDPRESS_DB_NAME: wordpressdb
+    volumes:
+      - ./wp-content:/var/www/html
+```
+
+### 3. Implementar Wordpress
+```
+mkdir ~/wordpress && cd ~/wordpress
+nano docker-compose.yml  # Cole o conteúdo acima
+docker-compose up -d
+```
+
+### 4. Criar o Arquivo ```healthcheck.html```
+```
+sudo touch healthcheck.html
+echo "OK" > /healthcheck.html
+```
+
+### 5. Verificar logs e status
+
+```
+docker ps
+docker logs <id-do-conteiner>
+```
+
+## 11. Testes e Validação
+
+1. **Verificar o Status do Load Balancer**:
+   - Certifique-se de que a instância está `InService`.
+
+2. **Acessar o WordPress via Navegador**:
+   - Acesse: `http://<DNS-do-Load-Balancer>`.
+
+3. **Concluir a Instalação do WordPress**:
+   - Siga as instruções na tela para configurar o WordPress.
+
+---
+
+## Considerações de Segurança
+
+- **Proteção de Credenciais**:
+  - Evite expor senhas em arquivos públicos.
+  - Considere o uso de variáveis de ambiente seguras ou AWS Secrets Manager.
+
+- **Security Groups Restritivos**:
+  - Mantenha as regras dos Security Groups tão restritivas quanto possível.
+
+- **Atualizações e Patches**:
+  - Mantenha o WordPress e os plugins atualizados.
+
+- **Backups**:
+  - Implemente soluções de backup para o banco de dados RDS e para os dados do WordPress.
+
+---
+
+## Próximos Passos
+
+- **Implementar HTTPS**:
+  - Configure certificados SSL para o Load Balancer usando o AWS Certificate Manager.
+
+- **Escalabilidade**:
+  - Considere adicionar Auto Scaling Groups para a instância EC2.
+
+- **Monitoramento**:
+  - Configure logs e métricas usando o AWS CloudWatch.
+
+- **Automatização**:
+  - Use ferramentas como AWS CloudFormation ou Terraform para automatizar a infraestrutura.
+
+## Referências
+
+- [Documentação AWS VPC](https://aws.amazon.com/vpc/)
+- [Documentação AWS EC2](https://aws.amazon.com/ec2/)
+- [Documentação AWS RDS](https://aws.amazon.com/rds/)
+- [Documentação Docker](https://docs.docker.com/)
+- [Documentação WordPress](https://wordpress.org/support/)
+
+---
+
+## Estrutura do Repositório
+
+- `README.md`: Documentação detalhada do projeto (este arquivo).
+- `docker-compose.yml`: Arquivo de configuração do Docker Compose.
+- `scripts/`: (Opcional) Scripts auxiliares.
+- `diagrams/`: (Opcional) Diagramas da arquitetura.
+
+---
+
+
