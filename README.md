@@ -92,10 +92,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Subnet:** `Subnet-Publica`
    - **Elastic IP:** Alocar um novo Elastic IP
 
-2. **Passos:**
-
-   - Acesse **NAT Gateways** no serviço VPC.
-   - Crie o NAT Gateway com os detalhes acima.
 
 ### **5. Configuração das Tabelas de Roteamento**
 
@@ -107,10 +103,10 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - **Rota:** `0.0.0.0/0` via **NAT Gateway** (`MeuNATGateway`)
 
-3. **Passos:**
+3. **Observação:**
 
    - Acesse **Route Tables** no serviço VPC.
-   - Atualize as tabelas de roteamento conforme necessário.
+   - Atualize as tabelas de roteamento conforme sua necessidade, não mantenha as rotas abertas.
 
 ### **6. Configuração dos Security Groups**
 
@@ -148,10 +144,10 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Auto-assign Public IP:** Desabilitado
    - **Security Group:** `SG-Privado`
 
-2. **Passos:**
+2. **Instanciamento:**
 
    - Acesse o serviço **EC2**.
-   - Lance uma nova instância com os detalhes acima.
+   - Execute uma EC2 conforme o passo-a-passo, mudando o que for necessário.
 
 ### **8. Configuração do RDS MySQL**
 
