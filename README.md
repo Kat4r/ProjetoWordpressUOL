@@ -43,47 +43,50 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ### **1. Configuração da VPC**
 
-1. **Criar uma VPC:**
+1. **No Console da AWS:**
+
+   - Acesse o serviço **VPC**.
+   - Selecione **Your VPCs** e clique em **Create VPC**.
+
+2. **Criar uma VPC:**
 
    - **Nome:** `MinhaVPC`
    - **Bloco CIDR IPv4:** `10.0.0.0/16`
 
-2. **No Console da AWS:**
-
-   - Acesse o serviço **VPC**.
-   - Selecione **Your VPCs** e clique em **Create VPC**.
-   - Insira os detalhes acima e crie a VPC.
 
 ### **2. Configuração das Subnets**
 
-1. **Criar Subnet Pública:**
+1. **No Console da AWS:**
+
+   - Acesse **Subnets** dentro do serviço VPC.
+
+2. **Criar Subnet Pública:**
 
    - **Nome:** `Subnet-Publica`
    - **Bloco CIDR:** `10.0.1.0/24`
    - **Zona de Disponibilidade:** `us-east-1a`
 
-2. **Criar Subnet Privada:**
+3. **Criar Subnet Privada:**
 
    - **Nome:** `Subnet-Privada`
    - **Bloco CIDR:** `10.0.2.0/24`
    - **Zona de Disponibilidade:** `us-east-1a`
 
-3. **No Console da AWS:**
 
-   - Acesse **Subnets** dentro do serviço VPC.
-   - Crie as subnets com os detalhes acima.
 
 ### **3. Configuração do Internet Gateway**
 
-1. **Criar e Associar o Internet Gateway:**
+1. **Associar IGW ao VPC:**
+
+   - Acesse **Internet Gateways** no serviço VPC.
+   - Crie o IGW e associe-o à VPC.
+
+2. **Criar e Associar o Internet Gateway:**
 
    - **Nome:** `MeuIGW`
    - **Associar à VPC:** `MinhaVPC`
 
-2. **Associar IGW ao VPC:**
 
-   - Acesse **Internet Gateways** no serviço VPC.
-   - Crie o IGW e associe-o à VPC.
 
 ### **4. Configuração do NAT Gateway**
 
@@ -95,17 +98,19 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ### **5. Configuração das Tabelas de Roteamento**
 
-1. **Tabela de Roteamento da Subnet Pública:**
+1, **Acessar tabelas**
+   - Acesse **Route Tables** no serviço VPC.
+
+2. **Tabela de Roteamento da Subnet Pública:**
 
    - **Rota:** `0.0.0.0/0` via **Internet Gateway** (`MeuIGW`)
 
-2. **Tabela de Roteamento da Subnet Privada:**
+3. **Tabela de Roteamento da Subnet Privada:**
 
    - **Rota:** `0.0.0.0/0` via **NAT Gateway** (`MeuNATGateway`)
 
-3. **Observação:**
+4. **Observação:**
 
-   - Acesse **Route Tables** no serviço VPC.
    - Atualize as tabelas de roteamento conforme sua necessidade, não mantenha as rotas abertas.
 
 ### **6. Configuração dos Security Groups**
@@ -136,7 +141,12 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ### **7. Lançamento da Instância EC2 Privada**
 
-1. **Configurações da Instância:**
+1. **Instanciamento:**
+
+   - Acesse o serviço **EC2**.
+   - Execute uma nova instância ou crie-a a partir de um modelo (template)
+
+2. **Configurações da Instância:**
 
    - **AMI:** Sistema linux de sua preferência
    - **Tipo de Instância:** t2.micro (ou conforme a necessidade)
@@ -144,10 +154,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Auto-assign Public IP:** Desabilitado
    - **Security Group:** `SG-Privado`
 
-2. **Instanciamento:**
-
-   - Acesse o serviço **EC2**.
-   - Execute uma EC2 conforme o passo-a-passo, mudando o que for necessário.
 
 ### **8. Configuração do RDS MySQL**
 
