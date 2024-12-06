@@ -33,29 +33,25 @@ docker --version >> /var/log/user-data.log 2>&1
 docker compose version >> /var/log/user-data.log 2>&1
 
 
-# Instalação do EFS dentro da EC2
-apt-get update
-apt-get -y install git binutils rustc cargo pkg-config libssl-dev gettext
-git clone https://github.com/aws/efs-utils
-cd efs-utils
-./build-deb.sh
-apt-get -y install ./build/amazon-efs-utils*deb
-
 # Criar ponto de montagem do EFS
-#sudo mkdir -p /efs
+sudo mkdir -p /efs
 
-# Montar o EFS usando o EFS Mount Helper com TLS
-#sudo mount -t efs -o tls fs-xxxxxxxxxx:/ /efs
+# Instalação do EFS dentro da EC2
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install -y nfs-common
 
-# Acessar o armazenamento EFS
-#cd /efs
+# Montar o EFS com TLS
+sudo mount -t efs -o tls fs-xxxxxxxx:/ /efs
 
-# Cria uma pasta para os arquivos do wordpress
-mkdir -p /wp
 
-# Acessa a pasta recém criada
-cd /wp
+# Criar pasta para depositar docker compose
+sudo mkdir -p /dc
 
+# Entrar na pasta recém criada
+cd /dc
+
+# Criação de docker compose
 cat << EOF > docker-compose.yaml
 services:
 
@@ -65,12 +61,12 @@ services:
     ports:
       - 80:80
     environment:
-      WORDPRESS_DB_HOST: <seu-rds>
-      WORDPRESS_DB_USER: <seu-usuário>
+      WORDPRESS_DB_HOST: <seu-endpoint>
+      WORDPRESS_DB_USER: <seu-user>
       WORDPRESS_DB_PASSWORD: <sua-senha>
-      WORDPRESS_DB_NAME: <nome-do-banco>
+      WORDPRESS_DB_NAME: wordpressdb
     volumes:
-      - /wordpress:/var/www/html
+      - /efs/wordpress:/var/www/html
 EOF
 
 # Iniciar o docker compose
