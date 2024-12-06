@@ -19,7 +19,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
   - [10. Implantação do WordPress com Docker](#10-implantação-do-wordpress-com-docker)
   - [11. Testes e Validação](#11-testes-e-validação)
 - [Considerações de Segurança](#considerações-de-segurança)
-- [Próximos Passos](#próximos-passos)
 - [Referências](#referências)
 
 ---
@@ -286,8 +285,8 @@ docker logs <id-do-conteiner>
 
 - `README.md`: Documentação detalhada do projeto (este arquivo).
 - `docker-compose.yml`: Arquivo de configuração do Docker Compose.
-- `scripts/`: (Opcional) Scripts auxiliares.
-- `diagrams/`: (Opcional) Diagramas da arquitetura.
+- `user_data.sh`: Arquivo de configuração da instância.
+- `imagens/`: Diagrama da arquitetura.
 
 ---
 
