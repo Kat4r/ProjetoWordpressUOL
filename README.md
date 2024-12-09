@@ -16,9 +16,9 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
   - [7. Lançamento da Instância EC2 Privada](#7-lançamento-da-instância-ec2-privada)
   - [8. Configuração do RDS MySQL](#8-configuração-do-rds-mysql)
   - [9. Configuração do EFS](#9-configuração-do-efs)
-  - [10. Configuração do Load Balancer Clássico](#10-configuração-do-load-balancer-clássico)
-  - [11. Implantação do WordPress com Docker](11#-implantação-do-wordpress-com-docker)
-  - [12. Testes e Validação](#12-testes-e-validação)
+  - [11. Configuração do Load Balancer Clássico](#11-configuração-do-load-balancer-clássico)
+  - [12. Implantação do WordPress com Docker](12#-implantação-do-wordpress-com-docker)
+  - [13. Testes e Validação](#13-testes-e-validação)
 - [Considerações de Segurança](#considerações-de-segurança)
 - [Referências](#referências)
 
@@ -184,7 +184,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 5. Associe o EFS a um Security Group (por exemplo, `SG-EFS`) que permita tráfego NFS (2049) do `SG-Privado`.
 6. Anote o **DNS do EFS**, algo como `fs-xxxxxxxx.efs.us-east-1.amazonaws.com`.
 
-## 9. Configuração do Load Balancer Clássico
+## 10. Configuração do Load Balancer Clássico
 
 1. **Criar o Classic Load Balancer**:
    - Nome: `MeuCLB`
@@ -203,7 +203,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 3. **Registrar Instâncias**:
    - Adicione a instância EC2 privada.
      
-## 10. Implantação do WordPress com Docker
+## 11. Implantação do WordPress com Docker
 
 ### 1. Instalar Docker e Docker Compose na Instância EC2:
 
@@ -256,7 +256,7 @@ docker logs <id-do-conteiner> #para verificar os logs de um conteiner especifico
 cat /var/log/cloud-init-output.log #para verificar as saídas do user_data.sh
 ```
 
-## 11. Criação do Auto Scaling Group (ASG)
+## 12. Criação do Auto Scaling Group (ASG)
 
 1. **Selecione o Launch Template**  
    - Escolha um **Launch Template** existente ou crie um novo.  
@@ -294,7 +294,7 @@ Essa configuração assegura alta disponibilidade, escalabilidade automática e 
 
 
 
-## 12. Testes e Validação
+## 13. Testes e Validação
 
 1. **Verificar o Status do Load Balancer**:
    - Certifique-se de que a instância está `InService`.
