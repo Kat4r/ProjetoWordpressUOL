@@ -15,9 +15,10 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
   - [6. Configuração dos Security Groups](#6-configuração-dos-security-groups)
   - [7. Lançamento da Instância EC2 Privada](#7-lançamento-da-instância-ec2-privada)
   - [8. Configuração do RDS MySQL](#8-configuração-do-rds-mysql)
-  - [9. Configuração do Load Balancer Clássico](#9-configuração-do-load-balancer-clássico)
-  - [10. Implantação do WordPress com Docker](#10-implantação-do-wordpress-com-docker)
-  - [11. Testes e Validação](#11-testes-e-validação)
+  - [9. Configuração do EFS](#9-configuração-do-efs)
+  - [10. Configuração do Load Balancer Clássico](#10-configuração-do-load-balancer-clássico)
+  - [11. Implantação do WordPress com Docker](11#-implantação-do-wordpress-com-docker)
+  - [12. Testes e Validação](#12-testes-e-validação)
 - [Considerações de Segurança](#considerações-de-segurança)
 - [Referências](#referências)
 
@@ -38,9 +39,9 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ---
 
-## **Passo-a-Passo para a configuração**
+# **Passo-a-Passo para a configuração total do projeto**
 
-### **1. Configuração da VPC**
+## **1. Configuração da VPC**
 
 1. **No Console da AWS:**
 
@@ -55,7 +56,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    
 
 
-### **2. Configuração das Subnets**
+## **2. Configuração das Subnets**
 
 1. **No Console da AWS:**
 
@@ -75,7 +76,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 
 
-### **3. Configuração do Internet Gateway**
+## **3. Configuração do Internet Gateway**
 
 1. **Associar IGW ao VPC:**
 
@@ -84,7 +85,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 
 
-### **4. Configuração do NAT Gateway**
+## **4. Configuração do NAT Gateway**
 
 1. **Criar o NAT Gateway:**
    - Acesse a guia NAT Getaway e selecione **Create NAT Getaway**
@@ -93,7 +94,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Elastic IP:** Alocar um novo Elastic IP
 
 
-### **5. Configuração das Tabelas de Roteamento**
+## **5. Configuração das Tabelas de Roteamento**
 
 1. **Acessar tabelas**
    - Acesse **Route Tables** no serviço VPC.
@@ -111,7 +112,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - Atualize as tabelas de roteamento conforme sua necessidade, não mantenha as rotas abertas.
 
-### **6. Configuração dos Security Groups**
+## **6. Configuração dos Security Groups**
 
 2. **Security Group para o Load Balancer (`SG-LoadBalancer`):**
 
@@ -129,6 +130,9 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
      - **Type:** SSH (opcional, apenas se usar Bastion Host)
      - **Port Range:** 22
      - **Source:** `SG-Bastion`
+     - **Type:** NFS
+     - **Port Range:** 2049
+     - **Source:** `x.x.x.x/y`
 
 
 
@@ -139,7 +143,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
      - **Port Range:** 3306
      - **Source:** `SG-Privado`
 
-### **7. Lançamento da Instância EC2 Privada**
+## **7. Lançamento da Instância EC2 Privada**
 
 1. **Instanciamento:**
 
@@ -155,7 +159,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Security Group:** `SG-Privado`
 
 
-### **8. Configuração do RDS MySQL**
+## **8. Configuração do RDS MySQL**
 
 1. **Criar o Banco de Dados RDS:**
 
@@ -169,10 +173,16 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Subnet Group:** Subnets privadas
    - **Public Accessibility:** No
    - **Security Group:** `SG-RDS`
-
-2. **Configurar o Banco de Dados:**
-
    - **Database Name:** `NOME DO BANCO DE DADOS`
+
+   
+## **9. Configuração do Amazon EFS**
+1. Acesse o console do **EFS**.
+2. Crie um novo **EFS**.
+3. Selecione a VPC `MinhaVPC`.
+4. Selecione as subnets privadas para os mount targets.
+5. Associe o EFS a um Security Group (por exemplo, `SG-EFS`) que permita tráfego NFS (2049) do `SG-Privado`.
+6. Anote o **DNS do EFS**, algo como `fs-xxxxxxxx.efs.us-east-1.amazonaws.com`.
 
 ## 9. Configuração do Load Balancer Clássico
 
@@ -204,40 +214,87 @@ sudo usermod -a -G docker ec2-user
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-### 2. Criar o arquivo ```docker-compose.yaml```
-```version: '3.8'
+### 2. Criar o arquivo ```docker-compose.yaml``` utilizando EOF dentro do ```user_data.sh```
+```
+mkdir ~/dc && cd ~/dc
 
+cat << EOF > docker-compose.yaml
 services:
+
   wordpress:
-    image: wordpress:latest
+    image: wordpress
+    restart: always
     ports:
-      - "80:80"
+      - 80:80
     environment:
-      WORDPRESS_DB_HOST: <seu endpoint rds>
+      WORDPRESS_DB_HOST: <seu endpoint RDS>
       WORDPRESS_DB_USER: <seu usuário>
       WORDPRESS_DB_PASSWORD: <sua senha>
-      WORDPRESS_DB_NAME: <nome da database>
+      WORDPRESS_DB_NAME: <nome do banco de dados>
     volumes:
-      - ./wp-content:/var/www/html
+      - /efs/wordpress:/var/www/html
+EOF
 ```
 
-### 3. Implementar Wordpress
+### 3. Implementar Wordpress com EFS
+ - Primeiro instale o EFS em sua EC2
 ```
-mkdir ~/wp && cd ~/wp
-sudo vim docker-compose.yml  # Cole o conteúdo acima
+sudo apt-get install -y nfs-common
+sudo mkdir /mnt/efs
+sudo mount -t efs -o tls fs-xxxxxxxx:/ /efs
+```
+ - Monte o Wordpress com docker compose
+
+```
 docker-compose up -d
 ```
 
-
-### 4. Verificar logs e status
-
+### 4. Verificar logs e status DENTRO da EC2 privada
 ```
-docker ps
-docker logs <id-do-conteiner>
-cat /var/log/cloud-init-output.log
+docker ps #para verificar se o conteiner está ativo
+docker logs <id-do-conteiner> #para verificar os logs de um conteiner especifico
+cat /var/log/cloud-init-output.log #para verificar as saídas do user_data.sh
 ```
 
-## 11. Testes e Validação
+## 11. Criação do Auto Scaling Group (ASG)
+
+1. **Selecione o Launch Template**  
+   - Escolha um **Launch Template** existente ou crie um novo.  
+   - Este template define configurações importantes para as instâncias, como:  
+     - Tipo de instância (exemplo: `t3.micro`, `t2.medium`).  
+     - Imagem de Máquina Amazon (AMI) a ser utilizada.  
+     - Configurações de rede, permissões de segurança e funções IAM.
+
+2. **Configure as Subnets Privadas**  
+   - Certifique-se de que as instâncias sejam lançadas na sua **VPC**.  
+
+
+3. **Anexe ao Target Group usado pelo Load Balancer**  
+   - Escolha o **Target Group** associado ao seu **Load Balancer** (ALB ou NLB).  
+
+
+4. **Defina a capacidade desejada, mínima e máxima**  
+   - Configure os limites de capacidade para o ASG:  
+     - **Desired Capacity (Capacidade desejada):** Número inicial de instâncias (exemplo: 2).  
+     - **Minimum Capacity (Capacidade mínima):** Número mínimo de instâncias a serem mantidas em execução (exemplo: 2).  
+     - **Maximum Capacity (Capacidade máxima):** Número máximo de instâncias permitidas (exemplo: 4).  
+   - Esses parâmetros garantem que o ASG mantenha o número de instâncias dentro dos limites definidos.
+
+5. **Adicione políticas de Scale-Out e Scale-In baseadas em métricas**  
+   - Configure **políticas de escalabilidade** para ajustar dinamicamente a quantidade de instâncias:  
+     - **Scale-Out:** Adicione instâncias quando uma métrica exceder um limite (exemplo: CPU acima de 70%).  
+     - **Scale-In:** Remova instâncias quando uma métrica estiver abaixo de um limite (exemplo: CPU abaixo de 30%).  
+   - Utilize métricas como:  
+     - Utilização de **CPU**.  
+     - Utilização de **memória** (custom metrics).  
+     - Quantidade de requisições no Load Balancer.  
+
+
+Essa configuração assegura alta disponibilidade, escalabilidade automática e otimização de custos para sua aplicação.
+
+
+
+## 12. Testes e Validação
 
 1. **Verificar o Status do Load Balancer**:
    - Certifique-se de que a instância está `InService`.
