@@ -19,7 +19,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
   - [10. Configuração do Load Balancer Clássico](#10-configuração-do-load-balancer-clássico)
   - [11. Implantação do WordPress com Docker](#11-implantação-do-wordpress-com-docker)
   - [12. Criação do Auto Scaling Group (ASG)](#12-criação-do-auto-scaling-group-asg)
-
   - [13. Testes e Validação](#13-testes-e-validação)
 - [Considerações de Segurança](#considerações-de-segurança)
 - [Referências](#referências)
