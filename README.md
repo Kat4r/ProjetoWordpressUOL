@@ -46,11 +46,13 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - Acesse o serviço **VPC**.
    - Selecione **Your VPCs** e clique em **Create VPC**.
+   - Utilize a opção: **Create VPC and more**
 
 2. **Criar uma VPC:**
 
    - **Nome:** `MinhaVPC`
-   - **Bloco CIDR IPv4:** `10.0.0.0/16`
+   - **Bloco CIDR IPv4:** `x.x.x.x/16`
+   
 
 
 ### **2. Configuração das Subnets**
@@ -59,17 +61,17 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - Acesse **Subnets** dentro do serviço VPC.
 
-2. **Criar Subnet Pública:**
+2. **Atualizar Subnet Pública:**
 
    - **Nome:** `Subnet-Publica`
-   - **Bloco CIDR:** `10.0.1.0/24`
-   - **Zona de Disponibilidade:** `us-east-1a`
+   - **Bloco CIDR:** `x.x.x.x/24`
+   - **Zona de Disponibilidade:** `AZ de acordo com a necessidade`
 
-3. **Criar Subnet Privada:**
+3. **Atualizar Subnet Privada:**
 
    - **Nome:** `Subnet-Privada`
-   - **Bloco CIDR:** `10.0.2.0/24`
-   - **Zona de Disponibilidade:** `us-east-1a`
+   - **Bloco CIDR:** `x.x.x.x/24`
+   - **Zona de Disponibilidade:** `AZ de acordo com a necessidade`
 
 
 
@@ -78,58 +80,57 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 1. **Associar IGW ao VPC:**
 
    - Acesse **Internet Gateways** no serviço VPC.
-   - Crie o IGW e associe-o à VPC.
-
-2. **Criar e Associar o Internet Gateway:**
-
-   - **Nome:** `MeuIGW`
-   - **Associar à VPC:** `MinhaVPC`
+   - Crie o IGW e associe-o **(Attach/Anexar)** à VPC criada.
 
 
 
 ### **4. Configuração do NAT Gateway**
 
 1. **Criar o NAT Gateway:**
-
+   - Acesse a guia NAT Getaway e selecione **Create NAT Getaway**
    - **Subnet:** `Subnet-Publica`
+   - **Conectivade:** Public
    - **Elastic IP:** Alocar um novo Elastic IP
 
 
 ### **5. Configuração das Tabelas de Roteamento**
 
-1, **Acessar tabelas**
+1. **Acessar tabelas**
    - Acesse **Route Tables** no serviço VPC.
 
-2. **Tabela de Roteamento da Subnet Pública:**
+2. **Acesse "Edit Routes" em cada rota na tabela de roteamento e siga a configuração:**
+    - Tabela de Roteamento da Subnet Pública:
+    
+        - **Rota:** `x.x.x.x/y` via **Internet Gateway** (`MeuIGW`)
+    
+    - Tabela de Roteamento da Subnet Privada:
+    
+        - **Rota:** `x.x.x.x/y` via **NAT Gateway** (`MeuNATGateway`)
 
-   - **Rota:** `0.0.0.0/0` via **Internet Gateway** (`MeuIGW`)
-
-3. **Tabela de Roteamento da Subnet Privada:**
-
-   - **Rota:** `0.0.0.0/0` via **NAT Gateway** (`MeuNATGateway`)
-
-4. **Observação:**
+3. **Observação:**
 
    - Atualize as tabelas de roteamento conforme sua necessidade, não mantenha as rotas abertas.
 
 ### **6. Configuração dos Security Groups**
-
-1. **Security Group para a Instância EC2 Privada (`SG-Privado`):**
-
-   - **Regras de Entrada:**
-     - **Type:** HTTP
-     - **Port Range:** 80
-     - **Source:** `SG-LoadBalancer` (será criado)
-     - **Type:** SSH (opcional, apenas se usar Bastion Host)
-     - **Port Range:** 22
-     - **Source:** `SG-Bastion`
 
 2. **Security Group para o Load Balancer (`SG-LoadBalancer`):**
 
    - **Regras de Entrada:**
      - **Type:** HTTP
      - **Port Range:** 80
-     - **Source:** `0.0.0.0/0`
+     - **Source:** `x.x.x.x/y`
+
+1. **Security Group para a Instância EC2 Privada (`SG-Privado`):**
+
+   - **Regras de Entrada:**
+     - **Type:** HTTP
+     - **Port Range:** 80
+     - **Source:** `SG-LoadBalancer`
+     - **Type:** SSH (opcional, apenas se usar Bastion Host)
+     - **Port Range:** 22
+     - **Source:** `SG-Bastion`
+
+
 
 3. **Security Group para o RDS (`SG-RDS`):**
 
@@ -187,7 +188,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 2. **Configurar o Health Check**:
    - Ping Protocol: HTTP
    - Ping Port: 80
-   - Ping Path: `/healthcheck.html`
+   - Ping Path: `/` ou `/wp-admin/install.php`
 
 3. **Registrar Instâncias**:
    - Adicione a instância EC2 privada.
@@ -227,17 +228,13 @@ sudo vim docker-compose.yml  # Cole o conteúdo acima
 docker-compose up -d
 ```
 
-### 4. Criar o Arquivo ```healthcheck.html```
-```
-sudo touch healthcheck.html
-echo "OK" > /healthcheck.html
-```
 
-### 5. Verificar logs e status
+### 4. Verificar logs e status
 
 ```
 docker ps
 docker logs <id-do-conteiner>
+cat /var/log/cloud-init-output.log
 ```
 
 ## 11. Testes e Validação
