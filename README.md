@@ -96,7 +96,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 ## **4. Configuração do NAT Gateway**
 
 1. **Criar o NAT Gateway:**
-   - Acesse a guia NAT Getaway e selecione **Create NAT Getaway**
+   - Acesse a guia NAT Gateway e selecione **Create NAT Gateway**
    - **Subnet:** `Subnet-Publica`
    - **Conectivade:** Public
    - **Elastic IP:** Alocar um novo Elastic IP
