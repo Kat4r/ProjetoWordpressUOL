@@ -6,7 +6,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 - [Arquitetura do Projeto](#arquitetura-do-projeto)
 - [Pré-requisitos](#pré-requisitos)
-- [Passo a Passo](#passo-a-passo)
+- [Passo a Passo](#passo-a-passo-para-a-configuração-total-do-projeto)
   - [1. Configuração da VPC](#1-configuração-da-vpc)
   - [2. Configuração das Subnets](#2-configuração-das-subnets)
   - [3. Configuração do Internet Gateway](#3-configuração-do-internet-gateway)
