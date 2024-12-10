@@ -41,7 +41,7 @@ sudo apt-get upgrade
 sudo apt-get install -y nfs-common
 
 # Montar o EFS usando o EFS Mount Helper com TLS
-sudo mount -t efs -o tls fs-04d495df048b8f91b:/ /efs
+sudo mount -t efs -o tls fs-xxxxxxxxxx:/ /efs
 
 # Criar pasta para depositar docker compose
 sudo mkdir -p /dc
@@ -59,12 +59,12 @@ services:
     ports:
       - 80:80
     environment:
-      WORDPRESS_DB_HOST: wpdb.c3u8iiygc6cb.us-east-1.rds.amazonaws.com
-      WORDPRESS_DB_USER: vini
-      WORDPRESS_DB_PASSWORD: 71433969
-      WORDPRESS_DB_NAME: wordpressdb
+      WORDPRESS_DB_HOST: <seu endpoint RDS>
+      WORDPRESS_DB_USER: <seu usuário>
+      WORDPRESS_DB_PASSWORD: <sua senha>
+      WORDPRESS_DB_NAME: <nome do banco de dados>
     volumes:
-      - /efs/wordpress:/var/www/html
+      - /efs/wordpress:/var/www/html #ponto de montagem/ pasta que será criada
 EOF
 
 # Iniciar o docker compose
