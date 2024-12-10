@@ -219,7 +219,7 @@ sudo usermod -a -G docker ec2-user
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-### 2. Criar o arquivo ```docker-compose.yaml``` utilizando EOF dentro do ```user_data.sh```
+### 2. Criar o arquivo ```docker-compose.yaml``` utilizando EOF dentro do ```user_data.sh``` (também pode ser utilizado diretamente no terminal)
 ```
 mkdir ~/dc && cd ~/dc
 
@@ -245,7 +245,7 @@ EOF
  - Primeiro instale o EFS em sua EC2
 ```
 sudo apt-get install -y nfs-common
-sudo mkdir /mnt/efs
+sudo mkdir /efs
 sudo mount -t efs -o tls fs-xxxxxxxx:/ /efs
 ```
  - Monte o Wordpress com docker compose
