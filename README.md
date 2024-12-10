@@ -34,11 +34,14 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 ## **Pré-requisitos**
 
 - Conta na AWS com permissões adequadas.
-- Chave SSH para acesso às instâncias EC2.
-- Conhecimento básico em AWS, Docker e WordPress.
-- AWS CLI e ferramentas de gerenciamento (opcional).
+- Chave SSH para acesso às instâncias EC2. (Opcional, caso use Bastion Host)
+- Conhecimento básico em AWS, Linux, Docker e WordPress.
 
 ---
+
+## Observações
+
+- Nas áreas de redes os IPs estão citados como x.x.x.x ou y, sinalizado a troca para um IP de sua preferencia, respeitando os espaços octais.
 
 # **Passo-a-Passo para a configuração total do projeto**
 
