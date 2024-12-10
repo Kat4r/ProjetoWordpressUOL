@@ -32,7 +32,6 @@ systemctl enable docker
 docker --version >> /var/log/user-data.log 2>&1
 docker compose version >> /var/log/user-data.log 2>&1
 
-
 # Criar ponto de montagem do EFS
 sudo mkdir -p /efs
 
@@ -41,9 +40,8 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install -y nfs-common
 
-# Montar o EFS com TLS
-sudo mount -t efs -o tls fs-xxxxxxxx:/ /efs
-
+# Montar o EFS usando o EFS Mount Helper com TLS
+sudo mount -t efs -o tls fs-04d495df048b8f91b:/ /efs
 
 # Criar pasta para depositar docker compose
 sudo mkdir -p /dc
@@ -61,9 +59,9 @@ services:
     ports:
       - 80:80
     environment:
-      WORDPRESS_DB_HOST: <seu-endpoint>
-      WORDPRESS_DB_USER: <seu-user>
-      WORDPRESS_DB_PASSWORD: <sua-senha>
+      WORDPRESS_DB_HOST: wpdb.c3u8iiygc6cb.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_USER: vini
+      WORDPRESS_DB_PASSWORD: 71433969
       WORDPRESS_DB_NAME: wordpressdb
     volumes:
       - /efs/wordpress:/var/www/html
@@ -71,8 +69,3 @@ EOF
 
 # Iniciar o docker compose
 docker compose up -d
-
-
-
-
-
