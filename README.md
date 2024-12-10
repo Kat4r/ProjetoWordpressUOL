@@ -54,6 +54,11 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - **Nome:** `MinhaVPC`
    - **Bloco CIDR IPv4:** `x.x.x.x/16`
+   - **Número de zonas de disponibilidade (AZs)**: `2`
+   - **Número de sub-redes públicas:** `2`
+   - **Número de sub-redes privadas:** `2`
+   - **Gateways NAT (USD)**: `Nenhuma` (será feito mais tarde)
+   - **Endpoints da VPC**: `De acordo com sua necessidade` (Nenhum ou endpoint para S3)
    
 
 
@@ -83,7 +88,6 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
    - Acesse **Internet Gateways** no serviço VPC.
    - Crie o IGW e associe-o **(Attach/Anexar)** à VPC criada.
-
 
 
 ## **4. Configuração do NAT Gateway**
