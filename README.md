@@ -41,7 +41,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ## Observações
 
-- Nas áreas de redes os IPs estão citados como x.x.x.x ou y, sinalizado a troca para um IP de sua preferencia, respeitando os espaços octais.
+- Nas áreas de redes os IPs estão citados como x.x.x.x ou y, sinalizando a troca para um IP de sua preferencia, respeitando os espaços octais.
 
 # **Passo-a-Passo para a configuração total do projeto**
 
@@ -122,14 +122,26 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 
 ## **6. Configuração dos Security Groups**
 
-2. **Security Group para o Load Balancer (`SG-LoadBalancer`):**
+1. **Security Group para o Load Balancer (`SG-LoadBalancer`):**
 
    - **Regras de Entrada:**
      - **Type:** HTTP
      - **Port Range:** 80
      - **Source:** `x.x.x.x/y`
 
-1. **Security Group para a Instância EC2 Privada (`SG-Privado`):**
+
+2. **Security Group para o RDS (`SG-RDS`):**
+
+   - **Regras de Entrada:**
+     - **Type:** MySQL/Aurora
+     - **Port Range:** 3306
+     - **Source:** `x.x.x.x/y`
+3. **Security Group para o EFS (`SG-EFS`):**
+   - **Regras de Entrada:**
+     - **Type:** NFS
+     - **Port Range:** 2049
+     - **Source:** `x.x.x.x/y`
+4. **Security Group para a Instância EC2 Privada (`SG-EC2`):**
 
    - **Regras de Entrada:**
      - **Type:** HTTP
@@ -137,19 +149,14 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
      - **Source:** `SG-LoadBalancer`
      - **Type:** SSH (opcional, apenas se usar Bastion Host)
      - **Port Range:** 22
-     - **Source:** `SG-Bastion`
+     - **Source:** `x.x.x.x/y`
+     - **Type:** MYSQL/Aurora
+     - **Port Range:** 3306
+     - **Source:** `SG-RDS`
      - **Type:** NFS
      - **Port Range:** 2049
-     - **Source:** `x.x.x.x/y`
-
-
-
-3. **Security Group para o RDS (`SG-RDS`):**
-
-   - **Regras de Entrada:**
-     - **Type:** MySQL/Aurora
-     - **Port Range:** 3306
-     - **Source:** `SG-Privado`
+     - **Source:** `SG-EFS`
+        
 
 ## **7. Lançamento da Instância EC2 Privada**
 
@@ -164,7 +171,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
    - **Tipo de Instância:** t2.micro (ou conforme a necessidade)
    - **Subnet:** `Subnet-Privada`
    - **Auto-assign Public IP:** Desabilitado
-   - **Security Group:** `SG-Privado`
+   - **Security Group:** `SG-EC2`
 
 
 ## **8. Configuração do RDS MySQL**
@@ -189,7 +196,7 @@ Este projeto demonstra como implantar uma aplicação WordPress em uma instânci
 2. Crie um novo **EFS**.
 3. Selecione a VPC `MinhaVPC`.
 4. Selecione as subnets privadas para os mount targets.
-5. Associe o EFS a um Security Group (por exemplo, `SG-EFS`) que permita tráfego NFS (2049) do `SG-Privado`.
+5. Associe o EFS a um Security Group (`SG-EFS`) que permita tráfego NFS (2049) do `SG-EC2`.
 6. Anote o **DNS do EFS**, algo como `fs-xxxxxxxx.efs.us-east-1.amazonaws.com`.
 
 ## 10. Configuração do Load Balancer Clássico
