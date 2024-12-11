@@ -40,8 +40,8 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install -y nfs-common
 
-# Montar o EFS usando o EFS Mount Helper com TLS
-sudo mount -t efs -o tls fs-xxxxxxxxxx:/ /efs
+# Montar o EFS usando o NFS
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-xxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /efs
 
 # Criar pasta para depositar docker compose
 sudo mkdir -p /dc
