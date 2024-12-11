@@ -256,7 +256,7 @@ EOF
 ```
 sudo apt-get install -y nfs-common
 sudo mkdir /efs
-sudo mount -t efs -o tls fs-xxxxxxxx:/ /efs
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-xxxxxxxxxx.efs.us-east-1.amazonaws.com:/ /efs
 ```
  - Monte o Wordpress com docker compose
 
